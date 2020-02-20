@@ -53,7 +53,7 @@ class BaseViewController: UITableViewController, UITextFieldDelegate {
         searchController.searchBar.barTintColor = UIColor.black
         textFieldInsideSearchBar = searchController.searchBar.value(forKey: "searchField") as? UITextField
         textFieldInsideSearchBar.backgroundColor = UIColor.white
-        searchController.searchBar.placeholder = "Search Artist/Album/Songs"
+        searchController.searchBar.placeholder = "Search For Album"
         searchController.hidesNavigationBarDuringPresentation = false
         tableView.tableHeaderView = searchController.searchBar
     }
