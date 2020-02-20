@@ -44,15 +44,16 @@ class BaseViewController: UITableViewController, UITextFieldDelegate {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.register(SubtitleTableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.tableFooterView = UIView(frame: CGRect.zero)
+        tableView.separatorColor = UIColor.red
 //        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
     }
     
     private func setupSearchController() {
         definesPresentationContext = true
-        searchController.searchBar.barTintColor = UIColor(white: 0.55, alpha: 0.9)
+        searchController.searchBar.barTintColor = UIColor.black
         textFieldInsideSearchBar = searchController.searchBar.value(forKey: "searchField") as? UITextField
         textFieldInsideSearchBar.backgroundColor = UIColor.white
-        searchController.searchBar.placeholder = "Repository Name/Language"
+        searchController.searchBar.placeholder = "Search Artist/Album/Songs"
         searchController.hidesNavigationBarDuringPresentation = false
         tableView.tableHeaderView = searchController.searchBar
     }
