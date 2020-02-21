@@ -11,12 +11,14 @@ import UIKit
 class BaseViewController: UITableViewController, UITextFieldDelegate {
     
     let cellId = "sdlfjowieurewfn3489844224947824dslaksjfs;ad"
-    var titleText = ""
     var models = [Model]()
     var filteredModels = [Model]()
-    let searchController = UISearchController(searchResultsController: nil)
-    var textFieldInsideSearchBar: UITextField!
-    let numberFormatter = NumberFormatter()
+    
+    let logoContainer = UIView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
+    let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
+    let image = UIImage(named: "lastFMRedBlack")
+    let searchBar = UISearchBar()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,75 +39,77 @@ class BaseViewController: UITableViewController, UITextFieldDelegate {
             Model(movie:"Moonlight", genre:"Drama")
         ]
         
-        textFieldInsideSearchBar.delegate = self
-        textFieldInsideSearchBar.returnKeyType = .search
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.register(SubtitleTableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.tableFooterView = UIView(frame: CGRect.zero)
-        tableView.separatorColor = UIColor.red
-//        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        tableView.separatorColor = UIColor.red //UIColor(red: 72.5/255, green: 0/255, blue: 0/255, alpha: 1)
+        
+        imageView.contentMode = .scaleAspectFit
+        imageView.image = image
+        logoContainer.addSubview(imageView)
+        navigationItem.titleView = logoContainer
+        //        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
     }
     
     private func setupSearchController() {
-        definesPresentationContext = true
-        searchController.searchBar.barTintColor = UIColor.black
-        textFieldInsideSearchBar = searchController.searchBar.value(forKey: "searchField") as? UITextField
-        textFieldInsideSearchBar.backgroundColor = UIColor.white
-        searchController.searchBar.placeholder = "Search For Album"
-        searchController.hidesNavigationBarDuringPresentation = false
-        tableView.tableHeaderView = searchController.searchBar
+        
+        searchBar.sizeToFit()
+        searchBar.placeholder = "Search for Album"
+        searchBar.delegate = self
+        showSearchBarButton(shouldShow: true)
+    }
+    
+    func showSearchBarButton (shouldShow: Bool) {
+        
+        if shouldShow {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(handleShowSearchBar))
+            
+        } else {
+            searchBar.showsCancelButton = true
+            navigationItem.rightBarButtonItem = nil
+        }
+    }
+    
+    func search(shouldShow: Bool) {
+        
+        showSearchBarButton(shouldShow: !shouldShow)
+        navigationItem.titleView = shouldShow  ? searchBar : logoContainer
     }
     
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @objc func handleShowSearchBar(){
+        
+        search(shouldShow: true)
+        searchBar.becomeFirstResponder()
     }
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
         
         let model: Model
-        if searchController.isActive && searchController.searchBar.text != "" {
-            model = filteredModels[indexPath.row]
-        } else {
+//        if searchController.isActive && searchController.searchBar.text != "" {
+//            model = filteredModels[indexPath.row]
+//        } else {
             model = models[indexPath.row]
-        }
+//        }
         cell.textLabel!.text = model.movie
         cell.detailTextLabel!.text = model.genre
         return cell
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if searchController.isActive && searchController.searchBar.text != "" {
-            return filteredModels.count
-        }
+//        if searchController.isActive && searchController.searchBar.text != "" {
+//            return filteredModels.count
+//        }
         
         return models.count
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
-    }
-    
-    
-    internal func textFieldShouldReturn(_ textFieldInsideSearchBar: UITextField) -> Bool {
-        
-        guard let searchText = textFieldInsideSearchBar.text else { return true }
-        
-        self.titleText = searchText
-        
-        DispatchQueue.main.async {
-            self.navigationItem.title = nil
-        }
-        
-        let plusSearchText = searchText.replacingOccurrences(of: " ", with: "+").lowercased()
-        
-        textFieldInsideSearchBar.resignFirstResponder()
-        textFieldInsideSearchBar.text = nil
-        return true
     }
 }
 
@@ -119,3 +123,35 @@ class SubtitleTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+extension BaseViewController: UISearchBarDelegate {
+    
+    //    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+    //
+    //    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.text = nil
+    }
+    
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        search(shouldShow:  false)
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        let searchTextString = searchBar.text!
+        
+        print(searchTextString.replacingOccurrences(of: " ", with: "+").lowercased())
+        search(shouldShow:  false)
+        searchBar.resignFirstResponder()
+        
+    }
+    
+    //    func searchBar(_ searchBar1: UISearchBar, textDidChange searchText: String) {
+    //
+    //    }
+}
+

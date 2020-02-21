@@ -23,7 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let navController = UINavigationController(rootViewController: controller)
         
         navController.navigationBar.barTintColor = UIColor.black
-
+        navController.navigationBar.isTranslucent = false
+        navController.navigationBar.barStyle = .black
+        navController.navigationBar.tintColor = .white
+        
         window = UIWindow(frame: UIScreen.main.bounds)
         
         window?.rootViewController = navController
