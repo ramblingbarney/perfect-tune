@@ -44,7 +44,7 @@ class BaseViewController: UITableViewController, UITextFieldDelegate {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.register(SubtitleTableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.tableFooterView = UIView(frame: CGRect.zero)
-        tableView.separatorColor = UIColor.red //UIColor(red: 72.5/255, green: 0/255, blue: 0/255, alpha: 1)
+        tableView.separatorColor = UIColor(red: 72.5/255, green: 0/255, blue: 0/255, alpha: 1)
         
         imageView.contentMode = .scaleAspectFit
         imageView.image = image
