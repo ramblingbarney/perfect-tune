@@ -8,36 +8,35 @@
 
 import UIKit
 
-class BaseViewController: UITableViewController, UITextFieldDelegate {
+protocol ListModel {
+    var numberOrSections: Int { get }
+    func numberOfRows(in section: Int) -> Int
+    func object(at indexPath: IndexPath) -> Any?
+}
+
+protocol MasterModel {
+    
+    var client: LastFMClient { get }
+    func searchFeed(with searchTerm: String?, completion: @escaping (Bool) -> Void)
+}
+
+class BaseViewController: UITableViewController, UITextFieldDelegate, MasterModel {
     
     let cellId = "sdlfjowieurewfn3489844224947824dslaksjfs;ad"
-    var models = [Model]()
-    var filteredModels = [Model]()
-    
     let logoContainer = UIView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
     let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
     let image = UIImage(named: "lastFMRedBlack")
     let searchBar = UISearchBar()
     
+    var client = LastFMClient()
     
+    private var searchResults: Root?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         setupSearchController()
-        
-        models = [
-            Model(movie:"The Dark Night", genre:"Action"),
-            Model(movie:"The Avengers", genre:"Action"),
-            Model(movie:"Logan", genre:"Action"),
-            Model(movie:"Shutter Island", genre:"Thriller"),
-            Model(movie:"Inception", genre:"Thriller"),
-            Model(movie:"Titanic", genre:"Romance"),
-            Model(movie:"La la Land", genre:"Romance"),
-            Model(movie:"Gone with the Wind", genre:"Romance"),
-            Model(movie:"Godfather", genre:"Drama"),
-            Model(movie:"Moonlight", genre:"Drama")
-        ]
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -50,7 +49,8 @@ class BaseViewController: UITableViewController, UITextFieldDelegate {
         imageView.image = image
         logoContainer.addSubview(imageView)
         navigationItem.titleView = logoContainer
-        //        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+    
+        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
     }
     
     private func setupSearchController() {
@@ -85,31 +85,27 @@ class BaseViewController: UITableViewController, UITextFieldDelegate {
         searchBar.becomeFirstResponder()
     }
     
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+    func searchFeed(with searchTerms: String? = nil, completion: @escaping (Bool) -> Void) {
         
-        let model: Model
-//        if searchController.isActive && searchController.searchBar.text != "" {
-//            model = filteredModels[indexPath.row]
-//        } else {
-            model = models[indexPath.row]
-//        }
-        cell.textLabel!.text = model.movie
-        cell.detailTextLabel!.text = model.genre
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if searchController.isActive && searchController.searchBar.text != "" {
-//            return filteredModels.count
-//        }
+        // Use the API to get data
+        client.getFeed(from: LastFMRequest.albumSearch(searchTerms: searchTerms) ) { result in
         
-        return models.count
-    }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+            switch result {
+                case .success(let data):
+                    do{
+                        let data = try DataParser.parse(data, type: RootClass.self)
+                        self.searchResults = data.results
+                        completion(true)
+                    } catch {
+                        print(error.localizedDescription)
+                        completion(false)
+                }
+                
+                case .failure(let error):
+                    print(error.localizedDescription)
+                    completion(false)
+            }
+        }
     }
 }
 
@@ -144,7 +140,9 @@ extension BaseViewController: UISearchBarDelegate {
         
         let searchTextString = searchBar.text!
         
-        print(searchTextString.replacingOccurrences(of: " ", with: "+").lowercased())
+        searchFeed(with: searchTextString.replacingOccurrences(of: " ", with: "+").lowercased(), completion: {_ in print(self.searchResults!)
+            
+        })
         search(shouldShow:  false)
         searchBar.resignFirstResponder()
         
@@ -153,5 +151,35 @@ extension BaseViewController: UISearchBarDelegate {
     //    func searchBar(_ searchBar1: UISearchBar, textDidChange searchText: String) {
     //
     //    }
+    
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        
+        let model: Model
+        //        if searchController.isActive && searchController.searchBar.text != "" {
+        //            model = filteredModels[indexPath.row]
+        //        } else {
+        //            model = models[indexPath.row]
+        ////        }
+        //        cell.textLabel!.text = model.movie
+        //        cell.detailTextLabel!.text = model.genre
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //        if searchController.isActive && searchController.searchBar.text != "" {
+        //            return filteredModels.count
+        //        }
+        
+        return 1 //models.count
+    }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    
+    
 }
 

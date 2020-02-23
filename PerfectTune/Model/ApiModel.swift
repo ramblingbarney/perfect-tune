@@ -1,5 +1,5 @@
 //
-//  Model.swift
+//  ApiModel.swift
 //  PerfectTune
 //
 //  Created by The App Experts on 20/02/2020.
@@ -10,14 +10,14 @@ import Foundation
 
 struct RootClass : Codable {
 
-    let results : Result?
+    let results : Root?
 
     enum CodingKeys: String, CodingKey {
         case results
     }
 }
 
-struct Result : Codable {
+struct Root : Codable {
 
     let attr : Attr
     let albummatches : Albummatche
@@ -38,14 +38,10 @@ struct Result : Codable {
 
 struct Albummatche : Codable {
 
-    let album : [Album]?
+    let album : [Album]
 
     enum CodingKeys: String, CodingKey {
         case album = "album"
-    }
-    init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        album = try values.decodeIfPresent([Album].self, forKey: .album)
     }
 }
 
@@ -67,7 +63,6 @@ struct Album : Codable {
         case url = "url"
     }
 }
-
 
 struct Attr : Codable {
 
@@ -93,7 +88,6 @@ struct OpensearchDetail : Codable {
     }
 }
 
-
 struct Image : Codable {
 
     let text : String?
@@ -104,4 +98,3 @@ struct Image : Codable {
         case size = "size"
     }
 }
-
