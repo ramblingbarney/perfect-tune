@@ -2,16 +2,28 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19D76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Albums" representedClassName="Albums" syncable="YES" codeGenerationType="class">
         <attribute name="artist" optional="YES" attributeType="String"/>
-        <attribute name="imageFileName" optional="YES" attributeType="String"/>
         <attribute name="imageUrl" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="searchGUID" optional="YES" attributeType="String"/>
         <relationship name="searches" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Searches" inverseName="albums" inverseEntity="Searches"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="artist"/>
+                <constraint value="name"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="Searches" representedClassName="Searches" syncable="YES" codeGenerationType="class">
         <attribute name="searchQuery" optional="YES" attributeType="String"/>
         <relationship name="albums" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Albums" inverseName="searches" inverseEntity="Albums"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="searchQuery"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <elements>
+        <element name="Albums" positionX="-181.1328125" positionY="-290.7421875" width="128" height="118"/>
         <element name="Searches" positionX="-63" positionY="-18" width="128" height="73"/>
-        <element name="Albums" positionX="-181.1328125" positionY="-290.7421875" width="128" height="103"/>
     </elements>
 </model>
