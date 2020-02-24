@@ -17,7 +17,7 @@ protocol ListModel {
 protocol MasterModel {
     
     var client: LastFMClient { get }
-    func searchFeed(with searchTerm: String?, completion: @escaping (Bool) -> Void)
+    func searchFeed(with userSearchTerm: String?, completion: @escaping (Bool) -> Void)
 }
 
 class BaseViewController: UITableViewController, UITextFieldDelegate, MasterModel {
@@ -31,7 +31,7 @@ class BaseViewController: UITableViewController, UITextFieldDelegate, MasterMode
     var client = LastFMClient()
     
     private var searchResults: Root?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -49,8 +49,8 @@ class BaseViewController: UITableViewController, UITextFieldDelegate, MasterMode
         imageView.image = image
         logoContainer.addSubview(imageView)
         navigationItem.titleView = logoContainer
-    
-        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
     }
     
     private func setupSearchController() {
@@ -85,25 +85,28 @@ class BaseViewController: UITableViewController, UITextFieldDelegate, MasterMode
         searchBar.becomeFirstResponder()
     }
     
-    func searchFeed(with searchTerms: String? = nil, completion: @escaping (Bool) -> Void) {
+    func searchFeed(with userSearchTerm: String?, completion: @escaping (Bool) -> Void) {
         
         // Use the API to get data
-        client.getFeed(from: LastFMRequest.albumSearch(searchTerms: searchTerms) ) { result in
-        
+        client.getFeed(from: LastFMRequest.albumSearch(userSearchTerm: userSearchTerm) ) { result in
+            
             switch result {
-                case .success(let data):
-                    do{
-                        let data = try DataParser.parse(data, type: RootClass.self)
-                        self.searchResults = data.results
-                        completion(true)
-                    } catch {
-                        print(error.localizedDescription)
-                        completion(false)
-                }
+            case .success(let data):
                 
-                case .failure(let error):
+                do {
+                    let data = try DataParser.parse(data, type: RootNode.self)
+                    
+                    self.searchResults = data.results
+                    completion(true)
+                    
+                } catch {
                     print(error.localizedDescription)
                     completion(false)
+                }
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+                completion(false)
             }
         }
     }
@@ -130,7 +133,6 @@ extension BaseViewController: UISearchBarDelegate {
         searchBar.text = nil
     }
     
-    
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         
         search(shouldShow:  false)
@@ -140,12 +142,32 @@ extension BaseViewController: UISearchBarDelegate {
         
         let searchTextString = searchBar.text!
         
-        searchFeed(with: searchTextString.replacingOccurrences(of: " ", with: "+").lowercased(), completion: {_ in print(self.searchResults!)
+        searchFeed(with: searchTextString.replacingOccurrences(of: " ", with: "+").lowercased(), completion: {_ in
             
+            if self.searchResults!.albumMatches.album.count == 0 {
+                
+                DispatchQueue.main.async {
+                    let alertController = UIAlertController(title: "No Albums Found", message: "Try Another Keyword(s)", preferredStyle: .alert)
+                    let OKAction = UIAlertAction(title: "OK", style: .default) { action in
+                        print("Pressed OK")
+                    }
+                    alertController.addAction(OKAction)
+                    self.present(alertController, animated: true, completion: nil)
+                }
+                
+            } else {
+//                print(self.searchResults!)
+                
+                let dataManager = DataManager(data: self.searchResults!)
+                dataManager.saveData()
+                
+                // start here
+                
+            }
         })
+    
         search(shouldShow:  false)
         searchBar.resignFirstResponder()
-        
     }
     
     //    func searchBar(_ searchBar1: UISearchBar, textDidChange searchText: String) {

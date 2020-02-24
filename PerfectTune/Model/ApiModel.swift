@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct RootClass : Codable {
+struct RootNode : Codable {
 
     let results : Root?
 
@@ -20,7 +20,7 @@ struct RootClass : Codable {
 struct Root : Codable {
 
     let attr : Attr
-    let albummatches : Albummatche
+    let albumMatches : AlbumMatch
     let opensearchQuery : OpensearchDetail
     let opensearchitemsPerPage : String?
     let opensearchstartIndex : String?
@@ -28,7 +28,7 @@ struct Root : Codable {
 
     enum CodingKeys: String, CodingKey {
         case attr = "@attr"
-        case albummatches
+        case albumMatches = "albummatches"
         case opensearchQuery = "opensearch:Query"
         case opensearchitemsPerPage = "opensearch:itemsPerPage"
         case opensearchstartIndex = "opensearch:startIndex"
@@ -36,7 +36,7 @@ struct Root : Codable {
     }
 }
 
-struct Albummatche : Codable {
+struct AlbumMatch : Codable {
 
     let album : [Album]
 

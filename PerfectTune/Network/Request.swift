@@ -33,7 +33,7 @@ extension Endpoint {
 }
 
 enum LastFMRequest {
-    case albumSearch(searchTerms: String?)
+    case albumSearch(userSearchTerm: String?)
 }
 
 extension LastFMRequest: Endpoint {
