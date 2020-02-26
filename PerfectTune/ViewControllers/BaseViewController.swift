@@ -7,29 +7,32 @@
 //
 
 import UIKit
+import CoreData
 
-protocol ListModel {
-    var numberOrSections: Int { get }
-    func numberOfRows(in section: Int) -> Int
-    func object(at indexPath: IndexPath) -> Any?
+protocol ResultsModel {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
 }
 
 protocol MasterModel {
-    
     var client: LastFMClient { get }
     func searchFeed(with userSearchTerm: String?, completion: @escaping (Bool) -> Void)
 }
 
-class BaseViewController: UITableViewController, UITextFieldDelegate, MasterModel {
+protocol DataReloadTableViewDelegate: class{
+    func reloadAlbumsTable()
+}
+
+class BaseViewController: UITableViewController, MasterModel {
     
     let cellId = "sdlfjowieurewfn3489844224947824dslaksjfs;ad"
     let logoContainer = UIView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
     let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
     let image = UIImage(named: "lastFMRedBlack")
     let searchBar = UISearchBar()
-    
     var client = LastFMClient()
-    
+    var model: AlbumsModel = AlbumsModel(CoreDataController.shared)
     private var searchResults: Root?
     
     override func viewDidLoad() {
@@ -51,6 +54,9 @@ class BaseViewController: UITableViewController, UITextFieldDelegate, MasterMode
         navigationItem.titleView = logoContainer
         
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
+        model.delegate = self
+        model.fetchAllAlbums()
     }
     
     private func setupSearchController() {
@@ -112,22 +118,8 @@ class BaseViewController: UITableViewController, UITextFieldDelegate, MasterMode
     }
 }
 
-class SubtitleTableViewCell: UITableViewCell {
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
 
 extension BaseViewController: UISearchBarDelegate {
-    
-    //    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    //
-    //    }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         searchBar.text = nil
@@ -140,7 +132,7 @@ extension BaseViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        let searchTextString = searchBar.text!
+        guard let searchTextString = searchBar.text else { return }
         
         searchFeed(with: searchTextString.replacingOccurrences(of: " ", with: "+").lowercased(), completion: {_ in
             
@@ -156,52 +148,72 @@ extension BaseViewController: UISearchBarDelegate {
                 }
                 
             } else {
-//                print(self.searchResults!)
                 
                 let dataManager = DataManager(data: self.searchResults!)
                 dataManager.saveData()
-                
-                // start here
-                
             }
         })
-    
+        
         search(shouldShow:  false)
         searchBar.resignFirstResponder()
     }
+}
+
+
+class SubtitleTableViewCell: UITableViewCell {
     
-    //    func searchBar(_ searchBar1: UISearchBar, textDidChange searchText: String) {
-    //
-    //    }
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+    }
     
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+extension BaseViewController: ResultsModel {
+    
+    var numberOrSections: Int { return 1 }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        guard section >= 0 && section < numberOrSections else { return 0 }
+        
+        return model.items.count ?? 0
+    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
         
-        let model: Model
-        //        if searchController.isActive && searchController.searchBar.text != "" {
-        //            model = filteredModels[indexPath.row]
-        //        } else {
-        //            model = models[indexPath.row]
-        ////        }
-        //        cell.textLabel!.text = model.movie
-        //        cell.detailTextLabel!.text = model.genre
+        let albumItem = model.items[indexPath.row]
+        cell.textLabel?.text = albumItem.value(forKeyPath: "name") as? String
+        cell.detailTextLabel?.text = albumItem.value(forKeyPath: "artist") as? String
+        
+        cell.accessoryType = .disclosureIndicator
+        // Populate the cell from the object
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //        if searchController.isActive && searchController.searchBar.text != "" {
-        //            return filteredModels.count
-        //        }
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        return 1 //models.count
+        let vc = DetailViewController()
+        let albumItem = model.items[indexPath.row]
+        vc.iamgeURL = albumItem.value(forKeyPath: "imageUrl") as? String
+        vc.albumName = albumItem.value(forKeyPath: "name") as? String
+        navigationController?.pushViewController(vc, animated: true)
+        
     }
-    
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
     
     
 }
 
+extension BaseViewController: DataReloadTableViewDelegate {
+    
+    func reloadAlbumsTable(){
+        DispatchQueue.main.async {
+            self.tableView.reloadData()
+        }
+    }
+    
+}

@@ -14,7 +14,9 @@ class AlbumsModel {
     let coreDataController: CoreDataController
     var currentAlbum: Albums?
     
-    private var items:[NSManagedObject] = []
+    var items:[NSManagedObject] = []
+    
+    weak var delegate: DataReloadTableViewDelegate?
     
     init(_ coreDataController: CoreDataController) {
         self.coreDataController = coreDataController
@@ -31,35 +33,46 @@ class AlbumsModel {
         newAlbum.artist = artist
         newAlbum.name = name
         newAlbum.imageUrl = imageUrl
-    
+        
         // Save context
         coreDataController.saveContext()
     }
-
-}
-
-extension AlbumsModel {
     
-    var numberOfSections: Int {
-        return 1
-    }
-    
-    func numberOfRows(inSection section: Int) -> Int {
+    func fetchAlbums(named albumNameToFind: String) -> [NSManagedObject] {
         
-        guard section >= 0 && section < numberOfSections else {
-            return 0
+        let albumName = Albums(context: coreDataController.mainContext)
+        
+        albumName.name = albumNameToFind
+        
+        // Create the FetchRequest for all searches
+        let allAlbums: NSFetchRequest = Albums.fetchRequest()
+        
+        // Predicate where the unique url of the account is equal to selected account unique url
+        guard let searchTerm = albumName.name else { return items }
+        let onlyInSelectedAlbums = NSPredicate(format: "name == %@", searchTerm)
+        
+        allAlbums.predicate = onlyInSelectedAlbums
+        
+        do {
+            items = try coreDataController.mainContext.fetch(allAlbums)
+        } catch {
+            print(error)
         }
         
-        return items.count
+        return items
     }
     
-    func item(at indexPath: IndexPath) -> NSManagedObject? {
+    internal func fetchAllAlbums() -> Void {
         
-        guard indexPath.row >= 0 && indexPath.row < numberOfRows(inSection: indexPath.section) else {
-            return nil
+        // Create the FetchRequest for all searches
+        let allAlbums: NSFetchRequest = Albums.fetchRequest()
+        
+        do {
+            self.items = try coreDataController.mainContext.fetch(allAlbums)
+            self.delegate?.reloadAlbumsTable()
+        } catch {
+            print(error)
         }
-        
-        return items[indexPath.row]
-        
     }
+    
 }
