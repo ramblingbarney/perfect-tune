@@ -47,12 +47,12 @@ struct AlbumMatch : Codable {
 
 struct Album : Codable {
 
-    let artist : String?
-    let image : [Image]?
-    let mbid : String?
-    let name : String?
-    let streamable : String?
-    let url : String?
+    let artist : String
+    let image : [Image]
+    let mbid : String
+    let name : String
+    let streamable : String
+    let url : String
 
     enum CodingKeys: String, CodingKey {
         case artist = "artist"
@@ -66,7 +66,7 @@ struct Album : Codable {
 
 struct Attr : Codable {
 
-    let forField : String?
+    let forField : String
 
     enum CodingKeys: String, CodingKey {
         case forField = "for"
@@ -90,8 +90,8 @@ struct OpensearchDetail : Codable {
 
 struct Image : Codable {
 
-    let text : String?
-    let size : String?
+    let text : String
+    let size : String
 
     enum CodingKeys: String, CodingKey {
         case text = "#text"

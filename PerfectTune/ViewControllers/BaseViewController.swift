@@ -9,18 +9,12 @@
 import UIKit
 import CoreData
 
-protocol ResultsModel {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
-}
-
 protocol MasterModel {
     var client: LastFMClient { get }
     func searchFeed(with userSearchTerm: String?, completion: @escaping (Bool) -> Void)
 }
 
-protocol DataReloadTableViewDelegate: class{
+protocol DataReloadTableViewDelegate: class {
     func reloadAlbumsTable()
 }
 
@@ -31,18 +25,13 @@ class BaseViewController: UITableViewController, MasterModel {
     let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
     let image = UIImage(named: "lastFMRedBlack")
     let searchBar = UISearchBar()
-    var client = LastFMClient()
-    var model: AlbumsModel = AlbumsModel(CoreDataController.shared)
+    let client = LastFMClient()
+    var model: CoreDataModel = CoreDataModel(CoreDataController.shared)
     private var searchResults: Root?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
         setupSearchController()
-        
-        tableView.dataSource = self
-        tableView.delegate = self
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.register(SubtitleTableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.tableFooterView = UIView(frame: CGRect.zero)
@@ -59,6 +48,7 @@ class BaseViewController: UITableViewController, MasterModel {
         model.fetchAllAlbums()
     }
     
+    // MARK - SearchBar
     private func setupSearchController() {
         
         searchBar.sizeToFit()
@@ -79,7 +69,6 @@ class BaseViewController: UITableViewController, MasterModel {
     }
     
     func search(shouldShow: Bool) {
-        
         showSearchBarButton(shouldShow: !shouldShow)
         navigationItem.titleView = shouldShow  ? searchBar : logoContainer
     }
@@ -91,6 +80,8 @@ class BaseViewController: UITableViewController, MasterModel {
         searchBar.becomeFirstResponder()
     }
     
+    
+    // MARK - API Request
     func searchFeed(with userSearchTerm: String?, completion: @escaping (Bool) -> Void) {
         
         // Use the API to get data
@@ -148,9 +139,12 @@ extension BaseViewController: UISearchBarDelegate {
                 }
                 
             } else {
+                do {
+                    try self.model.saveSearchAlbums(responseData: self.searchResults!)
+                } catch {
+                    print(error)
+                }
                 
-                let dataManager = DataManager(data: self.searchResults!)
-                dataManager.saveData()
             }
         })
         
@@ -158,7 +152,6 @@ extension BaseViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
 }
-
 
 class SubtitleTableViewCell: UITableViewCell {
     
@@ -171,7 +164,7 @@ class SubtitleTableViewCell: UITableViewCell {
     }
 }
 
-extension BaseViewController: ResultsModel {
+extension BaseViewController {
     
     var numberOrSections: Int { return 1 }
     
@@ -179,7 +172,7 @@ extension BaseViewController: ResultsModel {
         
         guard section >= 0 && section < numberOrSections else { return 0 }
         
-        return model.items.count ?? 0
+        return model.items.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -202,7 +195,6 @@ extension BaseViewController: ResultsModel {
         vc.iamgeURL = albumItem.value(forKeyPath: "imageUrl") as? String
         vc.albumName = albumItem.value(forKeyPath: "name") as? String
         navigationController?.pushViewController(vc, animated: true)
-        
     }
     
     
@@ -212,6 +204,7 @@ extension BaseViewController: DataReloadTableViewDelegate {
     
     func reloadAlbumsTable(){
         DispatchQueue.main.async {
+            print(self.model.items.count)
             self.tableView.reloadData()
         }
     }

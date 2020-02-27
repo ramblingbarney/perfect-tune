@@ -94,7 +94,7 @@ class LastFMClient: APIClient {
     // Fetching Image + Caching
     func fetchImage(for resultItem: Album, completion: @escaping (Result<UIImage, APIError>) -> Void) {
                 
-        guard let imageUrl = URL(string: (resultItem.image?[1].text)!) else { return completion(.failure(.invalidImageURL))  }
+        guard let imageUrl = URL(string: (resultItem.image[1].text)) else { return completion(.failure(.invalidImageURL))  }
         
         let imageKey = imageUrl.lastPathComponent as NSString
         
