@@ -11,7 +11,7 @@ import CoreData
 
 protocol MasterModel {
     var client: LastFMClient { get }
-    func searchFeed(with userSearchTerm: String?, completion: @escaping (Bool) -> Void)
+    func searchFeed(with userSearchTerm: String?, completion: @escaping (Bool) -> Void) throws
 }
 
 protocol DataReloadTableViewDelegate: class {
@@ -102,6 +102,8 @@ class BaseViewController: UITableViewController, MasterModel {
                 }
                 
             case .failure(let error):
+                guard let searchTerm = userSearchTerm else { return }
+                self.model.fetchAlbumsByKeyword(searchTerm: searchTerm.replacingOccurrences(of: "+", with: " "))
                 print(error.localizedDescription)
                 completion(false)
             }
@@ -127,29 +129,40 @@ extension BaseViewController: UISearchBarDelegate {
         
         searchFeed(with: searchTextString.replacingOccurrences(of: " ", with: "+").lowercased(), completion: {_ in
             
-            if self.searchResults!.albumMatches.album.count == 0 {
-                
-                DispatchQueue.main.async {
-                    let alertController = UIAlertController(title: "No Albums Found", message: "Try Another Keyword(s)", preferredStyle: .alert)
-                    let OKAction = UIAlertAction(title: "OK", style: .default) { action in
-                        print("Pressed OK")
-                    }
-                    alertController.addAction(OKAction)
-                    self.present(alertController, animated: true, completion: nil)
-                }
-                
+            var albumCount: Int?
+            
+            if self.searchResults == nil {
+                albumCount = 0
             } else {
+                albumCount = self.searchResults!.albumMatches.album.count
+            }
+            
+            if albumCount! == 0 && self.model.items.count == 0{
+                self.noAlbumsFoundAlert()
+            }
+            
+            if albumCount! > 0 {
                 do {
                     try self.model.saveSearchAlbums(responseData: self.searchResults!)
                 } catch {
                     print(error)
                 }
-                
             }
         })
-        
         search(shouldShow:  false)
         searchBar.resignFirstResponder()
+    }
+    
+    private func noAlbumsFoundAlert() {
+        
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "No Albums Found", message: "Try Another Keyword(s)", preferredStyle: .alert)
+            let OKAction = UIAlertAction(title: "OK", style: .default) { action in
+                print("Pressed OK")
+            }
+            alertController.addAction(OKAction)
+            self.present(alertController, animated: true, completion: nil)
+        }
     }
 }
 
