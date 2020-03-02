@@ -42,8 +42,6 @@ class BaseViewController: UITableViewController, MasterModel {
         logoContainer.addSubview(imageView)
         navigationItem.titleView = logoContainer
         
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
-        
         model.delegate = self
         model.fetchAllAlbums()
     }
