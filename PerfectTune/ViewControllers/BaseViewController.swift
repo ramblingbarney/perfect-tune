@@ -204,9 +204,7 @@ extension BaseViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let vc = DetailViewController()
-        let albumItem = model.items[indexPath.row]
-        vc.iamgeURL = albumItem.value(forKeyPath: "imageUrl") as? String
-        vc.albumName = albumItem.value(forKeyPath: "name") as? String
+        vc.albumItem = model.items[indexPath.row]
         navigationController?.pushViewController(vc, animated: true)
     }
     
