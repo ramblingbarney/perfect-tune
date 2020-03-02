@@ -37,17 +37,17 @@ class CoreDataModel {
             let imageUrlOne = element.image[1].text
             
             var imageUrl: String = ""
-            
-            if !JustLetters.blank(text: imageUrlTwo) {
-                imageUrl = imageUrlTwo
-            }
-            
+                        
             if !JustLetters.blank(text: imageUrlZero) {
                 imageUrl = imageUrlZero
             }
             
             if !JustLetters.blank(text: imageUrlOne) {
                 imageUrl = imageUrlOne
+            }
+            
+            if !JustLetters.blank(text: imageUrlTwo) {
+                imageUrl = imageUrlTwo
             }
             
             if !JustLetters.blank(text: artistName) && !JustLetters.blank(text: albumName) && !JustLetters.blank(text: imageUrl) {
