@@ -1,22 +1,22 @@
 //
-//  CoreDataModel.swift
-//  PerfectTune
+//  MockCoreDataModel.swift
+//  PerfectTuneTests
 //
-//  Created by The App Experts on 29/02/2020.
+//  Created by The App Experts on 04/04/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
 import Foundation
 import CoreData
+@testable import PerfectTune
 
-class CoreDataModel {
+class MockCoreDataModel {
 
-    weak var delegate: DataReloadTableViewDelegate?
-    let coreDataController: CoreDataController
+    let coreDataController: MockCoreDataController
     var populatedAlbum: [Album] = []
     var items: [Albums] = []
 
-    init(_ coreDataController: CoreDataController) {
+    init(_ coreDataController: MockCoreDataController) {
         self.coreDataController = coreDataController
         self.coreDataController.mainContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
     }
@@ -110,7 +110,6 @@ class CoreDataModel {
         } catch {
             print(error)
         }
-        delegate!.reloadAlbumsTable()
     }
 
     internal func fetchAllAlbums() {

@@ -21,6 +21,10 @@
 		031964372401F3D70052FD24 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031964362401F3D70052FD24 /* Client.swift */; };
 		0319643A2401F4170052FD24 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031964392401F4170052FD24 /* Request.swift */; };
 		0319644A240481C40052FD24 /* CoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03196449240481C40052FD24 /* CoreDataController.swift */; };
+		033D1FE024376524003BBED7 /* CoreDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033D1FDF24376524003BBED7 /* CoreDataTests.swift */; };
+		033D1FEE2438656A003BBED7 /* MockCoreDataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033D1FED2438656A003BBED7 /* MockCoreDataController.swift */; };
+		033D1FF0243866BD003BBED7 /* MockCoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033D1FEF243866BD003BBED7 /* MockCoreDataModel.swift */; };
+		033D1FF32438A3ED003BBED7 /* AlbumData.json in Resources */ = {isa = PBXBuildFile; fileRef = 033D1FF22438A3ED003BBED7 /* AlbumData.json */; };
 		03B6EDC12406B63000E7B6F1 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B6EDC02406B63000E7B6F1 /* DetailViewController.swift */; };
 		03B6EDE6240AF3A800E7B6F1 /* CoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B6EDE5240AF3A800E7B6F1 /* CoreDataModel.swift */; };
 		03B6EDE8240D4F8800E7B6F1 /* ClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B6EDE7240D4F8800E7B6F1 /* ClientTests.swift */; };
@@ -70,7 +74,6 @@
 		030784B923FDDFDB0029E9D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		030784BE23FDDFDC0029E9D2 /* PerfectTuneTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PerfectTuneTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		030784C423FDDFDC0029E9D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		030784C923FDDFDC0029E9D2 /* PerfectTuneUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PerfectTuneUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		030784DC23FDEB070029E9D2 /* Structs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Structs.swift; sourceTree = "<group>"; };
 		030784FE23FEA4850029E9D2 /* ApiKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
 		0307850023FEA4CC0029E9D2 /* ApiKeys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ApiKeys.plist; sourceTree = "<group>"; };
@@ -78,8 +81,11 @@
 		0319642623FF4AF00052FD24 /* ApiModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiModel.swift; sourceTree = "<group>"; };
 		031964362401F3D70052FD24 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		031964392401F4170052FD24 /* Request.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
-		03196441240401B50052FD24 /* KeychainSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KeychainSwift.framework; path = Carthage/Build/iOS/KeychainSwift.framework; sourceTree = "<group>"; };
 		03196449240481C40052FD24 /* CoreDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataController.swift; sourceTree = "<group>"; };
+		033D1FDF24376524003BBED7 /* CoreDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataTests.swift; sourceTree = "<group>"; };
+		033D1FED2438656A003BBED7 /* MockCoreDataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataController.swift; sourceTree = "<group>"; };
+		033D1FEF243866BD003BBED7 /* MockCoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoreDataModel.swift; sourceTree = "<group>"; };
+		033D1FF22438A3ED003BBED7 /* AlbumData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = AlbumData.json; sourceTree = "<group>"; };
 		03B6EDC02406B63000E7B6F1 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		03B6EDE5240AF3A800E7B6F1 /* CoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataModel.swift; sourceTree = "<group>"; };
 		03B6EDE7240D4F8800E7B6F1 /* ClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientTests.swift; sourceTree = "<group>"; };
@@ -129,7 +135,6 @@
 			children = (
 				030784A523FDDFD40029E9D2 /* PerfectTune.app */,
 				030784BE23FDDFDC0029E9D2 /* PerfectTuneTests.xctest */,
-				030784C923FDDFDC0029E9D2 /* PerfectTuneUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -158,12 +163,16 @@
 		030784C123FDDFDC0029E9D2 /* PerfectTuneTests */ = {
 			isa = PBXGroup;
 			children = (
+				033D1FDF24376524003BBED7 /* CoreDataTests.swift */,
 				030784C423FDDFDC0029E9D2 /* Info.plist */,
 				03B6EDE7240D4F8800E7B6F1 /* ClientTests.swift */,
 				03B6EDE9240D5B4500E7B6F1 /* RequestTests.swift */,
 				03B6EDEB240D5D7900E7B6F1 /* DataParserTests.swift */,
 				03B6EDED240D5E4700E7B6F1 /* SampleData.json */,
 				03B6EDEF240D5E8100E7B6F1 /* sampleResponse.json */,
+				033D1FED2438656A003BBED7 /* MockCoreDataController.swift */,
+				033D1FEF243866BD003BBED7 /* MockCoreDataModel.swift */,
+				033D1FF22438A3ED003BBED7 /* AlbumData.json */,
 			);
 			path = PerfectTuneTests;
 			sourceTree = "<group>";
@@ -205,7 +214,6 @@
 		03196440240401B40052FD24 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				03196441240401B50052FD24 /* KeychainSwift.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -238,6 +246,7 @@
 				030784A223FDDFD40029E9D2 /* Frameworks */,
 				030784A323FDDFD40029E9D2 /* Resources */,
 				030784E523FE05130029E9D2 /* CopyFiles */,
+				0371D47524369761002E3CB3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -281,7 +290,6 @@
 			);
 			name = PerfectTuneUITests;
 			productName = PerfectTuneUITests;
-			productReference = 030784C923FDDFDC0029E9D2 /* PerfectTuneUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -342,6 +350,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				033D1FF32438A3ED003BBED7 /* AlbumData.json in Resources */,
 				03B6EDF0240D5E8100E7B6F1 /* sampleResponse.json in Resources */,
 				03B6EDEE240D5E4700E7B6F1 /* SampleData.json in Resources */,
 			);
@@ -355,6 +364,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0371D47524369761002E3CB3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		030784A123FDDFD40029E9D2 /* Sources */ = {
@@ -381,7 +410,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				033D1FE024376524003BBED7 /* CoreDataTests.swift in Sources */,
 				03B6EDEC240D5D7900E7B6F1 /* DataParserTests.swift in Sources */,
+				033D1FF0243866BD003BBED7 /* MockCoreDataModel.swift in Sources */,
+				033D1FEE2438656A003BBED7 /* MockCoreDataController.swift in Sources */,
 				03B6EDE8240D4F8800E7B6F1 /* ClientTests.swift in Sources */,
 				03B6EDEA240D5B4500E7B6F1 /* RequestTests.swift in Sources */,
 			);
@@ -561,10 +593,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = PerfectTune/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -637,6 +666,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = PerfectTuneUITests/Info.plist;
+				LD_MAP_FILE_PATH = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -660,6 +690,7 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = PerfectTuneUITests/Info.plist;
+				LD_MAP_FILE_PATH = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

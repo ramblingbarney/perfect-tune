@@ -1,28 +1,33 @@
 //
-//  CoreDataController.swift
-//  PerfectTune
+//  MockCoreDataController.swift
+//  PerfectTuneTests
 //
-//  Created by The App Experts on 24/02/2020.
+//  Created by The App Experts on 04/04/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
 import Foundation
 import CoreData
 
-class CoreDataController {
+class MockCoreDataController {
 
     private init() {}
 
-    static let shared = CoreDataController()
+    static let shared = MockCoreDataController()
 
     var mainContext: NSManagedObjectContext {
 
-        return persistentContainer.viewContext
+        return mockPersistantContainer.viewContext
     }
 
-    lazy var persistentContainer: NSPersistentContainer = {
+    lazy var mockPersistantContainer: NSPersistentContainer = {
 
         let container = NSPersistentContainer(name: "PerfectTune")
+        let description = NSPersistentStoreDescription()
+        description.type = NSInMemoryStoreType
+        description.shouldAddStoreAsynchronously = false // Make it simpler in test env
+
+        container.persistentStoreDescriptions = [description]
         container.loadPersistentStores(completionHandler: { (_, error ) in
 
             if let error = error as NSError? {
@@ -36,7 +41,7 @@ class CoreDataController {
     // MARK: - Core Data Saving Support
     func saveContext() -> Bool {
 
-        let context = persistentContainer.viewContext
+        let context = mockPersistantContainer.viewContext
         if context.hasChanges {
             do {
 

@@ -8,11 +8,6 @@
 
 import Foundation
 
-struct Model {
-    let movie : String
-    let genre : String
-}
-
 struct JustLetters {
   static func blank(text: String) -> Bool {
     let trimmed = text.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

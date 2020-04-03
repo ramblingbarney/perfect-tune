@@ -8,23 +8,23 @@
 
 import Foundation
 
-struct RootNode : Codable {
+struct RootNode: Codable {
 
-    let results : Root?
+    let results: Root?
 
     enum CodingKeys: String, CodingKey {
         case results
     }
 }
 
-struct Root : Codable {
+struct Root: Codable {
 
-    let attr : Attr
-    let albumMatches : AlbumMatch
-    let opensearchQuery : OpensearchDetail
-    let opensearchitemsPerPage : String?
-    let opensearchstartIndex : String?
-    let opensearchtotalResults : String?
+    let attr: Attr
+    let albumMatches: AlbumMatch
+    let opensearchQuery: OpensearchDetail
+    let opensearchitemsPerPage: String?
+    let opensearchstartIndex: String?
+    let opensearchtotalResults: String?
 
     enum CodingKeys: String, CodingKey {
         case attr = "@attr"
@@ -36,49 +36,49 @@ struct Root : Codable {
     }
 }
 
-struct AlbumMatch : Codable {
+struct AlbumMatch: Codable {
 
-    let album : [Album]
+    let album: [Album]
 
     enum CodingKeys: String, CodingKey {
-        case album = "album"
+        case album
     }
 }
 
-struct Album : Codable {
+struct Album: Codable {
 
-    let artist : String
-    let image : [Image]
-    let mbid : String
-    let name : String
-    let streamable : String
-    let url : String
+    let artist: String
+    let image: [Image]
+    let mbid: String
+    let name: String
+    let streamable: String
+    let url: String
 
     enum CodingKeys: String, CodingKey {
-        case artist = "artist"
-        case image = "image"
-        case mbid = "mbid"
-        case name = "name"
-        case streamable = "streamable"
-        case url = "url"
+        case artist
+        case image
+        case mbid
+        case name
+        case streamable
+        case url
     }
 }
 
-struct Attr : Codable {
+struct Attr: Codable {
 
-    let forField : String
+    let forField: String
 
     enum CodingKeys: String, CodingKey {
         case forField = "for"
     }
 }
 
-struct OpensearchDetail : Codable {
+struct OpensearchDetail: Codable {
 
-    let text : String?
-    let role : String?
-    let searchTerms : String?
-    let startPage : String?
+    let text: String?
+    let role: String?
+    let searchTerms: String?
+    let startPage: String?
 
     enum CodingKeys: String, CodingKey {
         case text = "#text"
@@ -88,10 +88,10 @@ struct OpensearchDetail : Codable {
     }
 }
 
-struct Image : Codable {
+struct Image: Codable {
 
-    let text : String
-    let size : String
+    let text: String
+    let size: String
 
     enum CodingKeys: String, CodingKey {
         case text = "#text"
