@@ -2,7 +2,6 @@
 //  MockCoreDataController.swift
 //  PerfectTuneTests
 //
-//  Created by The App Experts on 04/04/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
@@ -25,7 +24,7 @@ class MockCoreDataController {
         let container = NSPersistentContainer(name: "PerfectTune")
         let description = NSPersistentStoreDescription()
         description.type = NSInMemoryStoreType
-        description.shouldAddStoreAsynchronously = false // Make it simpler in test env
+        description.shouldAddStoreAsynchronously = false
 
         container.persistentStoreDescriptions = [description]
         container.loadPersistentStores(completionHandler: { (_, error ) in

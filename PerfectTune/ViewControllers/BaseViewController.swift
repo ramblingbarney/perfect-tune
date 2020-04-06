@@ -2,7 +2,6 @@
 //  ViewController.swift
 //  PerfectTune
 //
-//  Created by The App Experts on 19/02/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
@@ -20,7 +19,6 @@ protocol DataReloadTableViewDelegate: class {
 
 class BaseViewController: UITableViewController, MasterModel {
 
-    let cellId = "sdlfjowieurewfn3489844224947824dslaksjfs;ad"
     let logoContainer = UIView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
     let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 44, height: 44))
     let image = UIImage(named: "lastFMRedBlack")
@@ -31,9 +29,10 @@ class BaseViewController: UITableViewController, MasterModel {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
         setupSearchController()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-        tableView.register(SubtitleTableViewCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: ReuseId.cellIdTable)
+        tableView.register(SubtitleTableViewCell.self, forCellReuseIdentifier: ReuseId.cellIdSubTable)
         tableView.tableFooterView = UIView(frame: CGRect.zero)
         tableView.separatorColor = UIColor(red: 72.5/255, green: 0/255, blue: 0/255, alpha: 1)
 
@@ -44,6 +43,7 @@ class BaseViewController: UITableViewController, MasterModel {
 
         model.delegate = self
         model.fetchAllAlbums()
+        noStartUpNoData()
     }
 
     // MARK: - SearchBar
@@ -124,19 +124,17 @@ extension BaseViewController: UISearchBarDelegate {
 
         searchFeed(with: searchTextString.replacingOccurrences(of: " ", with: "+").lowercased(), completion: {_ in
 
-            var albumCount: Int?
+            var albumCount = 0
 
-            if self.searchResults == nil {
-                albumCount = 0
-            } else {
-                albumCount = self.searchResults!.albumMatches.album.count
+            if let results = self.searchResults {
+                albumCount = results.albumMatches.albums.count
             }
 
-            if albumCount! == 0 && self.model.items.count == 0 {
-                self.noAlbumsFoundAlert()
+            if albumCount == 0 {
+                self.noAlbumsFoundAlert(message: "Try Another Keyword")
             }
 
-            if albumCount! > 0 {
+            if albumCount > 0 {
                 do {
                     try self.model.saveSearchAlbums(responseData: self.searchResults!)
                 } catch {
@@ -148,12 +146,20 @@ extension BaseViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
 
-    private func noAlbumsFoundAlert() {
+    private func noStartUpNoData() {
+
+        if self.model.items.count == 0 {
+
+            noAlbumsFoundAlert(message: "Shucks Quick Search For Albums")
+        }
+    }
+
+    private func noAlbumsFoundAlert(message: String) {
 
         DispatchQueue.main.async {
-            let alertController = UIAlertController(title: "No Albums Found", message: "Try Another Keyword(s)", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "No Albums Found", message: message, preferredStyle: .alert)
             let OKAction = UIAlertAction(title: "OK", style: .default) { _ in
-                print("Pressed OK")
+
             }
             alertController.addAction(OKAction)
             self.present(alertController, animated: true, completion: nil)
@@ -185,7 +191,7 @@ extension BaseViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: ReuseId.cellIdTable, for: indexPath)
 
         let albumItem = model.items[indexPath.row]
         cell.textLabel?.text = albumItem.value(forKeyPath: "name") as? String
@@ -208,7 +214,6 @@ extension BaseViewController: DataReloadTableViewDelegate {
 
     func reloadAlbumsTable() {
         DispatchQueue.main.async {
-            print(self.model.items.count)
             self.tableView.reloadData()
         }
     }

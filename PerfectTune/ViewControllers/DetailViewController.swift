@@ -2,7 +2,6 @@
 //  DetailViewController.swift
 //  PerfectTune
 //
-//  Created by The App Experts on 26/02/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 

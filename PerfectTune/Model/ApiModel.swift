@@ -2,7 +2,6 @@
 //  ApiModel.swift
 //  PerfectTune
 //
-//  Created by The App Experts on 20/02/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
@@ -38,10 +37,10 @@ struct Root: Codable {
 
 struct AlbumMatch: Codable {
 
-    let album: [Album]
+    let albums: [Album]
 
     enum CodingKeys: String, CodingKey {
-        case album
+        case albums = "album"
     }
 }
 

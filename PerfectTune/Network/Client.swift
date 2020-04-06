@@ -2,18 +2,11 @@
 //  Client.swift
 //  PerfectTune
 //
-//  Created by The App Experts on 22/02/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
 import Foundation
 import UIKit.UIImage
-
-// An ENUM to represent the return state from the API
-enum Result<T, U> where U: Error {
-    case success(T)
-    case failure(U)
-}
 
 // A list of possible errors, to be used with the ENUMs above
 enum APIError: Error {

@@ -2,7 +2,6 @@
 //  MockCoreDataModel.swift
 //  PerfectTuneTests
 //
-//  Created by The App Experts on 04/04/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
@@ -13,7 +12,7 @@ import CoreData
 class MockCoreDataModel {
 
     let coreDataController: MockCoreDataController
-    var populatedAlbum: [Album] = []
+    var populatedAlbums: [Album] = []
     var items: [Albums] = []
 
     init(_ coreDataController: MockCoreDataController) {
@@ -27,65 +26,39 @@ class MockCoreDataModel {
 
         newSearch.searchQuery = responseData.attr.forField
 
-        for (_, element) in responseData.albumMatches.album.enumerated() {
+        for element in responseData.albumMatches.albums {
 
             let artistName = element.artist
             let albumName = element.name
-            let imageUrlTwo = element.image[2].text
-            let imageUrlZero = element.image[0].text
-            let imageUrlOne = element.image[1].text
+            let imageURLChosenToSave = getLargestAvailableImage(from: element.image)
 
-            var imageUrl: String = ""
-
-            if !JustLetters.blank(text: imageUrlZero) {
-                imageUrl = imageUrlZero
+            guard let imageUrlToSave = imageURLChosenToSave else {
+                print("\(element.name) has no image \(element.image)")
+                continue
             }
 
-            if !JustLetters.blank(text: imageUrlOne) {
-                imageUrl = imageUrlOne
-            }
+            if !artistName.isBlank && !albumName.isBlank && !imageUrlToSave.isBlank {
 
-            if !JustLetters.blank(text: imageUrlTwo) {
-                imageUrl = imageUrlTwo
-            }
-
-            if !JustLetters.blank(text: artistName) && !JustLetters.blank(text: albumName) && !JustLetters.blank(text: imageUrl) {
-
-                populatedAlbum.append(element)
+                populatedAlbums.append(element)
             }
         }
 
-        for element in populatedAlbum {
+        for element in populatedAlbums {
 
             let newAlbum = Albums(context: coreDataController.mainContext)
 
             let artistName = element.artist
             let albumName = element.name
-            let imageUrlTwo = element.image[2].text
-            let imageUrlZero = element.image[0].text
-            let imageUrlOne = element.image[1].text
 
-            var imageUrl: String = ""
-
-            if !JustLetters.blank(text: imageUrlZero) {
-                imageUrl = imageUrlZero
-            }
-
-            if !JustLetters.blank(text: imageUrlOne) {
-                imageUrl = imageUrlOne
-            }
-
-            if !JustLetters.blank(text: imageUrlTwo) {
-                imageUrl = imageUrlTwo
-            }
+            let imageURLChosenSaving = getLargestAvailableImage(from: element.image)
+            guard let imageUrlSaving = imageURLChosenSaving else { return }
 
             newAlbum.searches = newSearch
             newAlbum.artist = artistName
             newAlbum.name = albumName
-            newAlbum.imageUrl = imageUrl
+            newAlbum.imageUrl = imageUrlSaving
 
             newSearch.addToAlbums(newAlbum)
-
         }
         // Save context
         _ = coreDataController.saveContext()

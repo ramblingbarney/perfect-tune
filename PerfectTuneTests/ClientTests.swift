@@ -2,7 +2,6 @@
 //  ClientTests.swift
 //  PerfectTuneTests
 //
-//  Created by The App Experts on 02/03/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 

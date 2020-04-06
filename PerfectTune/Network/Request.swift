@@ -2,7 +2,6 @@
 //  Request.swift
 //  PerfectTune
 //
-//  Created by The App Experts on 22/02/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
@@ -49,12 +48,11 @@ extension LastFMRequest: Endpoint {
 
         switch self {
         case .albumSearch(let xTerm):
-
             // We append some search tags
             if let term = xTerm, !term.isEmpty {
                 params.append(URLQueryItem(name: "method", value: "album.search"))
                 params.append(URLQueryItem(name: "album", value: term))
-                params.append(URLQueryItem(name: "api_key", value: valueForAPIKey(named: "API_KEY")))
+                params.append(URLQueryItem(name: "api_key", value: valueForAPIKey(key: "apiKey")))
             }
         }
 

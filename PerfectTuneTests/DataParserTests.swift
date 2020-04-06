@@ -2,7 +2,6 @@
 //  DataParserTests.swift
 //  PerfectTuneTests
 //
-//  Created by The App Experts on 02/03/2020.
 //  Copyright © 2020 Conor O'Dwyer. All rights reserved.
 //
 
@@ -85,7 +84,7 @@ class DataParserTests: XCTestCase {
             let simpleData = try Data(contentsOf: URL(fileURLWithPath: sampleDataPath))
             let result = try DataParser.parse(simpleData, type: RootNode.self)
 
-            XCTAssertGreaterThanOrEqual(result.results!.albumMatches.album.count, 1)
+            XCTAssertGreaterThanOrEqual(result.results!.albumMatches.albums.count, 1)
 
         } catch {
 
