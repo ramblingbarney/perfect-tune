@@ -122,6 +122,7 @@ struct Image: Codable {
 class CoreDataTests: XCTestCase {
 
     var systemUnderTest: MockCoreDataModel!
+    var coreDataController: MockCoreDataController!
     private var searchResults: Root!
 
     override func setUp() {
@@ -130,8 +131,10 @@ class CoreDataTests: XCTestCase {
     }
 
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+
         super.tearDown()
+        systemUnderTest.deleteAllData("Albums")
+        systemUnderTest.deleteAllData("Searches")
     }
 
     func testCheckEmpty() {
